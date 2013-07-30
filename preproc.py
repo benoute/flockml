@@ -98,7 +98,7 @@ class OneHotEncoder:
     """
     Encode categorical integer features using a one-hot aka one-of-K scheme.
     """
-    def __init__(self, rare_threshold=0.):
+    def __init__(self, rare_threshold=0):
         self.levels = []
         self.levels_len = []
         self.num_bin_features = 0
@@ -110,13 +110,12 @@ class OneHotEncoder:
         self.lb_view = lb_view
 
     def __get_levels(self, X, class_idx):
-        nrows = float(X.shape[0])
         levels = np.unique(X[:,class_idx])
-        levels_freq = np.zeros(levels.shape[0])
+        levels_count = np.zeros(levels.shape[0])
         for i, level in enumerate(levels):
-            levels_freq[i] = np.where(X[:,class_idx] == level)[0].shape[0]/nrows
-        return (levels[np.where(levels_freq > self.rare_threshold)], 
-                    np.any(levels_freq <= self.rare_threshold))
+            levels_count[i] = np.where(X[:,class_idx] == level)[0].shape[0]
+        return (levels[np.where(levels_count > self.rare_threshold)],
+                    np.any(levels_count <= self.rare_threshold))
 
     def fit(self, X):
         self.num_class_features = X.shape[1]
