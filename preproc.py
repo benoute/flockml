@@ -26,13 +26,12 @@ def do_get_feature(X, num_class, levels, levels_len):
 
 def do_get_levels(X, class_idx, rare_threshold):
     import numpy as np2
-    nrows = float(X.shape[0])
     levels = np2.unique(X[:,class_idx])
-    levels_freq = np2.zeros(levels.shape[0])
+    levels_count = np2.zeros(levels.shape[0])
     for i, level in enumerate(levels):
-        levels_freq[i] = np2.where(X[:,class_idx] == level)[0].shape[0]/nrows
-    return (levels[np2.where(levels_freq > rare_threshold)], 
-                np2.any(levels_freq <= rare_threshold))
+        levels_count[i] = np2.where(X[:,class_idx] == level)[0].shape[0]
+    return (levels[np2.where(levels_count > rare_threshold)],
+                np2.any(levels_count <= rare_threshold))
 
 def interactions(X, degree=2):
     """
